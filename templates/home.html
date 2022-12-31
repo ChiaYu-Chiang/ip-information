@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <title>IP Information</title>
+</head>
+<body>
+    <form method="post">
+        <label for="url">請輸入網址：</label>
+        <input type="text" name="url" id="url" placeholder="請輸入網址" required>
+        <input type="submit" name="send" value="送出">
+    </form>
+    {% for i in range(0, iplist|length) %}
+        <table>
+            <tr>
+                <td><b>Address:</b></td>
+                <td>{{ iplist[i][0] }}</td>
+            </tr>
+            <tr>
+                <td><b>Hostname:</b></td>
+                <td>{{ iplist[i][1] }}</td>
+            </tr>
+            <tr>
+                <td><b>ASN:</b></td>
+                <td>{{ iplist[i][2][0] }}</td>
+            </tr>
+            <tr>
+                <td><b>Country:</b></td>
+                <td>{{ iplist[i][2][1] }}</td>
+            </tr>
+            <tr>
+                <td><b>City:</b></td>
+                <td>{{ iplist[i][2][2] }}</td>
+            </tr>
+        </table>
+        <br>
+    {% endfor %}
+</body>
+</html>
