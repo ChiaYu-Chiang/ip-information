@@ -16,11 +16,12 @@ def get_ipaddr_list(qfdn):
 
 
 # nslookup: domain name to aliases
-def get_aliases(qfdn):
+def get_catch_from_local_dns(qfdn):
     qfdn = re.sub(r"^https?://|/$", "", qfdn)
     host_ex = socket.gethostbyname_ex(qfdn)
+    name = host_ex[0]
     alias_list = list(host_ex[1])
-    return(alias_list)
+    return(name, alias_list)
 
 
 # ping –a: ip address to hostname
@@ -46,8 +47,11 @@ if __name__ == "__main__":
     iplist = get_ipaddr_list(url)
     print(iplist)
 
-    aliases = get_aliases(url)
-    print(aliases)
+    local_catch = get_catch_from_local_dns(url)
+    name = local_catch[0]
+    alias = local_catch[1]
+    print(name)
+    print(alias)
 
     ipaddr = "13.213.231.25"
     hostname = get_hostname(ipaddr)

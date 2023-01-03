@@ -9,30 +9,49 @@
         <input type="text" name="url" id="url" placeholder="請輸入網址" required>
         <input type="submit" name="send" value="送出">
     </form>
+    <br>
+    <table>
+        <tr>
+        {% if name is defined %}
+            <th align="left">URL: </th>
+            <td>{{ url }}</td>
+        </tr>
+        <tr>
+            <th align="left">Name: </th>
+            <td>{{ name }}</td>
+        </tr>
+        {% endif %}
+        {% for alias in aliases %}
+            <tr>
+                <th align="left">Aliases: </th>
+                <td>{{ alias }}</td>
+            </tr>
+        {% endfor %}
+    </table>   
     {% for i in range(0, iplist|length) %}
+        <br>
         <table>
             <tr>
-                <td><b>Address:</b></td>
+                <th align="left">Address: </th>
                 <td>{{ iplist[i][0] }}</td>
             </tr>
             <tr>
-                <td><b>Hostname:</b></td>
+                <th align="left">Hostname: </th>
                 <td>{{ iplist[i][1] }}</td>
             </tr>
             <tr>
-                <td><b>ASN:</b></td>
+                <th align="left">ASN: </th>
                 <td>{{ iplist[i][2][0] }}</td>
             </tr>
             <tr>
-                <td><b>Country:</b></td>
+                <th align="left">Country: </th>
                 <td>{{ iplist[i][2][1] }}</td>
             </tr>
             <tr>
-                <td><b>City:</b></td>
+                <th align="left">City: </th>
                 <td>{{ iplist[i][2][2] }}</td>
             </tr>
         </table>
-        <br>
     {% endfor %}
 </body>
 </html>
