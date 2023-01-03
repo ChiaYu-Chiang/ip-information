@@ -43,7 +43,10 @@ def get_ipinfo_detail(ip_addr, ipinfo_api_token):
 # simple test region
 
 if __name__ == "__main__":
-    url = "http://www.sugar.com.tw/"
+    ipinfo_api_token = input("Please enter your ipinfo_api_token: ")
+    url = "www.sugar.com.tw"
+    ipaddr = "13.213.231.25"
+
     iplist = get_ipaddr_list(url)
     print(iplist)
 
@@ -53,11 +56,9 @@ if __name__ == "__main__":
     print(name)
     print(alias)
 
-    ipaddr = "13.213.231.25"
     hostname = get_hostname(ipaddr)
     print(hostname)
 
-    ipinfo_api_token = input("Please enter your ipinfo_api_token: ")
     ASN, Country, City = get_ipinfo_detail(ipaddr, ipinfo_api_token)
     print(ASN, Country, City)
 
