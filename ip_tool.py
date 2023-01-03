@@ -15,6 +15,14 @@ def get_ipaddr_list(qfdn):
     return(ip_list)
 
 
+# nslookup: domain name to aliases
+def get_aliases(qfdn):
+    qfdn = re.sub(r"^https?://|/$", "", qfdn)
+    host_ex = socket.gethostbyname_ex(qfdn)
+    alias_list = list(host_ex[1])
+    return(alias_list)
+
+
 # ping –a: ip address to hostname
 
 def get_hostname(ip_addr):
@@ -34,9 +42,12 @@ def get_ipinfo_detail(ip_addr, ipinfo_api_token):
 # simple test region
 
 if __name__ == "__main__":
-    url = "https://www.ez66.com.tw/"
+    url = "http://www.sugar.com.tw/"
     iplist = get_ipaddr_list(url)
     print(iplist)
+
+    aliases = get_aliases(url)
+    print(aliases)
 
     ipaddr = "13.213.231.25"
     hostname = get_hostname(ipaddr)
