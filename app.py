@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request
-from ip_tool import get_hostname, get_catch_from_local_dns, get_ipaddr_list, get_ipinfo_detail
+from ip_tool import get_hostname, get_cache_from_local_dns, get_ipaddr_list, get_ipinfo_detail
 
 app = Flask(__name__)
 
@@ -12,7 +12,7 @@ def home():
     if request.method == 'POST':
         if request.values['send']=='送出':
             url = request.values['url']
-            local_catch = get_catch_from_local_dns(url)
+            local_catch = get_cache_from_local_dns(url)
             name = local_catch[0]
             aliases = local_catch[1]
             ips = get_ipaddr_list(url)

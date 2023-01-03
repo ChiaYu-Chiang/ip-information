@@ -16,7 +16,7 @@ def get_ipaddr_list(qfdn):
 
 
 # nslookup: domain name to aliases
-def get_catch_from_local_dns(qfdn):
+def get_cache_from_local_dns(qfdn):
     qfdn = re.sub(r"^https?://|/$", "", qfdn)
     host_ex = socket.gethostbyname_ex(qfdn)
     name = host_ex[0]
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     iplist = get_ipaddr_list(url)
     print(iplist)
 
-    local_catch = get_catch_from_local_dns(url)
+    local_catch = get_cache_from_local_dns(url)
     name = local_catch[0]
     alias = local_catch[1]
     print(name)
