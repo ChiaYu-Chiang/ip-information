@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_field %}
+{% from 'bootstrap5/table.html' import render_table %}
+{% from 'bootstrap5/utils.html' import render_icon %}
+
+
+{% block title %}IP Information{% endblock %}
+
+
+{% block content %}
+
+<form method="post" class="row row-cols-lg-auto g-3 align-items-center">
+    {{ form.csrf_token() }}
+    {{ render_field(form.url, placeholder="請輸入欲查詢網址", form_type="inline") }}
+    <div class="mb-3 col-12">{{ render_field(form.submit, form_type="inline") }}</div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <tr>
+            {% if name is defined %}
+            <th align="left">Searching URL: </th>
+            <td>{{ url }}</td>
+        </tr>
+        <tr>
+            <th align="left">Name: </th>
+            <td>{{ name }}</td>
+        </tr>
+        {% endif %}
+        {% for alias in aliases %}
+        <tr>
+            <th align="left">Aliases: </th>
+            <td>{{ alias }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% for i in range(0, iplist|length) %}
+    <br>
+    <table class="table table-hover">
+        <tr>
+            <th align="left">Address: </th>
+            <td>{{ iplist[i][0] }}</td>
+        </tr>
+        <tr>
+            <th align="left">Hostname: </th>
+            <td>{{ iplist[i][1] }}</td>
+        </tr>
+        <tr>
+            <th align="left">ASN: </th>
+            <td>{{ iplist[i][2][0] }}</td>
+        </tr>
+        <tr>
+            <th align="left">Country: </th>
+            <td>{{ iplist[i][2][1] }}</td>
+        </tr>
+        <tr>
+            <th align="left">City: </th>
+            <td>{{ iplist[i][2][2] }}</td>
+        </tr>
+    </table>
+    {% endfor %}
+</div>
+
+{% endblock %}
