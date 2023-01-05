@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from ip_tool import (
@@ -23,7 +24,7 @@ def home():
     form = URLForm()
     if form.validate_on_submit():
         url = form.url.data
-
+        url = re.sub(r"^https?://|/$", "", url)
         local_catch = get_cache_from_local_dns(url)
         name = local_catch[0]
         aliases = local_catch[1]
