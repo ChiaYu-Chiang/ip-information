@@ -1,6 +1,6 @@
 import os
 import re
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
 from ip_tool import (
     get_hostname,
@@ -65,5 +65,4 @@ def page_not_found(error):
 def app_errorhandler(e):
     if isinstance(e, HTTPException):
         return e
-    message = ""
     return render_template("500.html", message=e), 500
