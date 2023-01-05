@@ -8,6 +8,7 @@ from ip_tool import (
     get_ipinfo_detail,
 )
 from forms import URLForm
+from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
@@ -45,3 +46,23 @@ def home():
         )
     form.url.data = ""
     return render_template("beauti_home.html", form=form)
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    message = "Access denied"
+    return render_template("403.html", message=message), 403
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    message = "This page '{}' dose not exist".format(request.base_url)
+    return render_template("404.html", message=message), 404
+
+
+@app.errorhandler(Exception)
+def app_errorhandler(e):
+    if isinstance(e, HTTPException):
+        return e
+    message = ""
+    return render_template("500.html", message=e), 500
