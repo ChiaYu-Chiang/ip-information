@@ -1,15 +1,16 @@
 import os
 import re
+import logging
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
+from forms import URLForm
+from werkzeug.exceptions import HTTPException
 from ip_tool import (
     get_hostname,
     get_cache_from_local_dns,
     get_ipaddr_list,
     get_ipinfo_detail,
 )
-from forms import URLForm
-from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
@@ -18,7 +19,30 @@ bootstrap = Bootstrap5(app)
 app.config["access_token"] = os.environ.get("access_token")
 app.config["SECRET_KEY"] = os.urandom(24)
 
+# logging file format
+logging.basicConfig(
+    filename="app.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(name)-15s - %(levelname)-8s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
+# log status after every request
+@app.after_request
+def get_status_code(response):
+    user_ip = request.headers["X-Forwarded-For"]
+    status_code = response.status
+    logging.info(
+        "Request: method=%s, status=%s, path=%s, user_ip=%s",
+        request.method,
+        status_code,
+        request.path,
+        user_ip,
+    )
+    return response
+
+
+# main page
 @app.route("/", methods=["GET", "POST"])
 def home():
     form = URLForm()

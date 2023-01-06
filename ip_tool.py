@@ -2,7 +2,6 @@ import re
 import socket
 import ipinfo
 
-
 # nslookup: domain name to ip address
 def get_ipaddr_list(qfdn):
     ip_list = []
