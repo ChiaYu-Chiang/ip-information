@@ -65,4 +65,9 @@ def page_not_found(error):
 def app_errorhandler(e):
     if isinstance(e, HTTPException):
         return e
+    message = "Unfortunately we're having trouble loading the page you are looking for. Please come back in a while."
     return render_template("500.html", message=e), 500
+
+
+if __name__ == "__main__":
+    app.run()
