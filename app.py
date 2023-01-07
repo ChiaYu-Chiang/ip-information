@@ -3,6 +3,7 @@ import re
 import logging
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
+from models import db, Search
 from forms import URLForm
 from werkzeug.exceptions import HTTPException
 from ip_tool import (
@@ -12,12 +13,21 @@ from ip_tool import (
     get_ipinfo_detail,
 )
 
+
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 
-# > $set access_token="access_token from https://ipinfo.io/account/token"
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# > $set access_token='access_token from https://ipinfo.io/account/token'
 app.config["access_token"] = os.environ.get("access_token")
 app.config["SECRET_KEY"] = os.urandom(24)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+    basedir, "data.sqlite"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db.init_app(app)
 
 # logging file format
 logging.basicConfig(
@@ -40,6 +50,28 @@ def get_status_code(response):
         user_ip,
     )
     return response
+
+
+# insert data after every request with form submitted
+@app.after_request
+def save_to_database(response):
+    form = URLForm()
+    if form.validate_on_submit():
+        url = form.url.data
+        fqdn = re.sub(r"^https?://|/$", "", url)
+        ip = request.headers["X-Forwarded-For"]
+
+        search = Search(fqdn=fqdn, ip=ip)
+        db.session.add(search)
+        db.session.commit()
+
+    return response
+
+
+# auto import objects when using flask shell
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=db, Search=Search)
 
 
 # main page
@@ -81,7 +113,7 @@ def forbidden(error):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    message = "This page '{}' dose not exist".format(request.base_url)
+    message = 'This page "{}" dose not exist'.format(request.base_url)
     return render_template("404.html", message=message), 404
 
 
@@ -89,8 +121,8 @@ def page_not_found(error):
 def app_errorhandler(e):
     if isinstance(e, HTTPException):
         return e
-    message = "Unfortunately we're having trouble loading the page you are looking for. Please come back in a while."
-    return render_template("500.html", message=e), 500
+    message = "Unfortunately we are having trouble loading the page you are looking for. Please come back in a while."
+    return render_template("500.html", message=message), 500
 
 
 if __name__ == "__main__":
