@@ -113,7 +113,7 @@ def forbidden(error):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    message = 'This page "{}" dose not exist'.format(request.base_url)
+    message = "This page dose not exist"
     return render_template("404.html", message=message), 404
 
 
