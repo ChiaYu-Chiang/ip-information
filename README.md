@@ -22,7 +22,7 @@ python -m venv .venv
 ```
 3. Install required packages.
 ```cmd
-pip -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## How to use
