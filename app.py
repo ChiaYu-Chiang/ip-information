@@ -38,9 +38,11 @@ logging.basicConfig(
 )
 
 # log status after every request
+
+
 @app.after_request
 def get_status_code(response):
-    user_ip = request.headers["X-Forwarded-For"]
+    user_ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
     status_code = response.status
     logging.info(
         "Request: method=%s, status=%s, path=%s, user_ip=%s",
@@ -59,7 +61,7 @@ def save_to_database(response):
     if form.validate_on_submit():
         url = form.url.data
         fqdn = re.sub(r"^https?://|/$", "", url)
-        ip = request.headers["X-Forwarded-For"]
+        ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
 
         search = Search(fqdn=fqdn, ip=ip)
         db.session.add(search)
@@ -90,7 +92,8 @@ def home():
         for ipnum in range(0, len(ips)):
             ip = ips[ipnum]
             hostname = get_hostname(ip)
-            ipinfo = get_ipinfo_detail(ip, ipinfo_api_token=app.config["access_token"])
+            ipinfo = get_ipinfo_detail(
+                ip, ipinfo_api_token=app.config["access_token"])
             ipdetail_list.append([ip, hostname, ipinfo])
 
         return render_template(
@@ -121,7 +124,7 @@ def page_not_found(error):
 def app_errorhandler(e):
     if isinstance(e, HTTPException):
         return e
-    message = "Unfortunately we are having trouble loading the page you are looking for. Please come back in a while."
+    message = "Oops! Something went wrong. Please come back in a while."
     return render_template("500.html", message=message), 500
 
 
