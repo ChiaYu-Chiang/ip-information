@@ -6,16 +6,16 @@
 
 <form method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center container-fluid mb-3">
     {{ form.csrf_token() }}
-    <div class="col">{{ render_field(form.url, placeholder="請輸入欲查詢網址", form_type="inline") }}</div>
-    <div class="mb-3 col-12">{{ render_field(form.submit, form_type="inline") }}</div>
+    <div class="col-6">{{ render_field(form.url, placeholder="請輸入欲查詢網址", form_type="inline") }}</div>
+    <div class="mb-3 col-2">{{ render_field(form.submit, form_type="inline") }}</div>
 </form>
 
-<div class="table-responsive">
-    <table class="table table-hover mx-auto w-75">
+<div class="table-responsive-lg mx-auto">
+    <table class="table table-hover">
         <tr>
             {% if name is defined %}
-            <th class="w-25">Searching FQDN: </th>
-            <td class="w-75"><a href="{{ ''.join(['http://', url]) }}" target="_blank">{{ url }}</a></td>
+            <th>FQDN: </th>
+            <td><a href="{{ ''.join(['http://', url]) }}" target="_blank">{{ url }}</a></td>
         </tr>
         <tr>
             <th>Name: </th>
@@ -25,15 +25,15 @@
         {% for alias in aliases %}
         <tr>
             <th>Aliases: </th>
-            <td>{{ alias }}</td>
+            <td style="word-break:break-word">{{ alias }}</td>
         </tr>
         {% endfor %}
     </table>
     {% for i in range(0, iplist|length) %}
-    <table class="table table-hover mx-auto w-75">
+    <table class="table table-hover">
         <tr>
-            <th class="w-25">Address: </th>
-            <td class="w-75">{{ iplist[i][0] }}</td>
+            <th>Address: </th>
+            <td>{{ iplist[i][0] }}</td>
         </tr>
         <tr>
             <th>Hostname: </th>

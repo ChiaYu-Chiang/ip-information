@@ -1,4 +1,5 @@
 import pytest
+import pytest_flask
 import os
 from flask import current_app
 from models import db
