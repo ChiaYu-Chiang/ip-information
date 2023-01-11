@@ -6,14 +6,14 @@
 
 <form method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center container-fluid mb-3">
     {{ form.csrf_token() }}
-    <div class="col-6">{{ render_field(form.url, placeholder="請輸入欲查詢網址", form_type="inline") }}</div>
+    <div class="col-8">{{ render_field(form.url, placeholder="請輸入欲查詢網址", form_type="inline") }}</div>
     <div class="mb-3 col-2">{{ render_field(form.submit, form_type="inline") }}</div>
 </form>
 
 <div class="table-responsive-lg mx-auto">
     <table class="table table-hover">
+        {% if name is defined %}
         <tr>
-            {% if name is defined %}
             <th>FQDN: </th>
             <td><a href="{{ ''.join(['http://', url]) }}" target="_blank">{{ url }}</a></td>
         </tr>
@@ -25,12 +25,10 @@
         {% for alias in aliases %}
         <tr>
             <th>Aliases: </th>
-            <td style="word-break:break-word">{{ alias }}</td>
+            <td style="word-break: break-word;">{{ alias }}</td>
         </tr>
         {% endfor %}
-    </table>
-    {% for i in range(0, iplist|length) %}
-    <table class="table table-hover">
+        {% for i in range(0, iplist|length) %}
         <tr>
             <th>Address: </th>
             <td>{{ iplist[i][0] }}</td>
@@ -51,8 +49,8 @@
             <th>City: </th>
             <td>{{ iplist[i][2][2] }}</td>
         </tr>
+        {% endfor %}
     </table>
-    {% endfor %}
 </div>
 
 {% endblock %}
