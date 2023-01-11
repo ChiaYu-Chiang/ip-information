@@ -38,6 +38,8 @@ logging.basicConfig(
 )
 
 # log status after every request
+
+
 @app.after_request
 def get_status_code(response):
     user_ip = request.headers["X-Forwarded-For"]
@@ -90,7 +92,8 @@ def home():
         for ipnum in range(0, len(ips)):
             ip = ips[ipnum]
             hostname = get_hostname(ip)
-            ipinfo = get_ipinfo_detail(ip, ipinfo_api_token=app.config["access_token"])
+            ipinfo = get_ipinfo_detail(
+                ip, ipinfo_api_token=app.config["access_token"])
             ipdetail_list.append([ip, hostname, ipinfo])
 
         return render_template(
