@@ -47,7 +47,7 @@ python run_waitress
 cd C:\yourpath\nginx-version\
 start nginx 
 ```
-3. set Nginx.cof.
+3. set nginx.config.
 ```nginx
 http {
     server {
