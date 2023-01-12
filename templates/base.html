@@ -14,7 +14,7 @@
     {{ bootstrap.load_css() }}
     {% endblock %}
 
-    <title>IP Information{% block title %}{% endblock %}</title>
+    <title>fqdn-info{% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='Chief-new-logo_shortcut-icon.png') }}"
         type="image/x-icon">
     {% endblock %}
@@ -25,7 +25,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top mb-3">
         <div class="container-fluid">
             <div class="navbar-brand">
-                {{ render_nav_item('home', 'IP Information') }}
+                {{ render_nav_item('home', 'FQDN Info') }}
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
