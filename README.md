@@ -50,10 +50,27 @@ start nginx
 3. set nginx.conf.
 ```nginx
 http {
+    server{
+        listen 80;
+        server_name localhost;
+        # Redirect http to https
+        return 301 https://$server_name$request_uri;
+    }
+
     server {
         # IP Information project with waitress
-        listen 8000;
+        listen 443 ssl http2;
         server_name localhost;
+
+        ssl_certificate yourpath/filename.crt;
+        ssl_certificate_key yourpath/filename.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+        error_page 502 503 /custom_50x.html;
+        location = /custom_50x.html {
+            internal;
+        }
+
         location / {
             proxy_pass http://127.0.0.1:5000;
  

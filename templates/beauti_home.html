@@ -3,13 +3,11 @@
 
 
 {% block content %}
-
 <form method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center container-fluid mb-3">
     {{ form.csrf_token() }}
-    <div class="col-8">{{ render_field(form.url, placeholder="請輸入欲查詢網址",
-        pattern="(?=^.{1,253}$)(^(((?!-)[a-zA-Z0-9-]{1,63}(?<!-))|((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63})$)",
-            form_type="inline" ) }} </div>
-            <div class="mb-3 col-2">{{ render_field(form.submit, form_type="inline") }}</div>
+    <div class="col-8">{% for error in form.url.errors %}<div class="text-danger"><small>{{ error }}</small></div>{%
+        endfor %}{{ render_field(form.url, form_type="inline") }}</div>
+    <div class="mb-3 col-2">{{ render_field(form.submit, form_type="inline") }}</div>
 </form>
 
 <div class="table-responsive-lg mx-auto">
