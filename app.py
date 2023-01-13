@@ -1,6 +1,7 @@
 import os
 import re
 import logging
+import datetime
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
 from models import db, Search
@@ -31,7 +32,7 @@ db.init_app(app)
 
 # logging file format
 logging.basicConfig(
-    filename="app.log",
+    filename="logs/" + datetime.datetime.now().strftime("%Y_%m_%d.log"),
     level=logging.INFO,
     format="%(asctime)s - %(name)-15s - %(levelname)-8s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
