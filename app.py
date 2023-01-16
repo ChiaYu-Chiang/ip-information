@@ -1,7 +1,7 @@
 import os
 import re
 import logging
-import datetime
+from logging.handlers import TimedRotatingFileHandler
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
 from models import db, Search
@@ -30,13 +30,20 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
+# configure the log handler
+log_handler = TimedRotatingFileHandler(
+    "logs/app.log", when='D', interval=1)
+log_handler.suffix = "%Y_%m_%d"
+
 # logging file format
 logging.basicConfig(
-    filename="logs/" + datetime.datetime.now().strftime("%Y_%m_%d.log"),
     level=logging.INFO,
     format="%(asctime)s - %(name)-15s - %(levelname)-8s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
+    # add the log handler to the app
+    handlers=[log_handler],
 )
+
 
 # log status after every request
 
@@ -64,6 +71,9 @@ def save_to_database(response):
         fqdn = re.sub(r"^https?://|/$", "", url)
         ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
 
+        result = get_cache_from_local_dns(fqdn)
+        if result is None:
+            return response
         search = Search(fqdn=fqdn, ip=ip)
         db.session.add(search)
         db.session.commit()
@@ -85,6 +95,10 @@ def home():
         url = form.url.data
         url = re.sub(r"^https?://|/$", "", url)
         local_catch = get_cache_from_local_dns(url)
+        if local_catch is None:
+            error_message = "找不到FQDN"
+            return render_template("beauti_home.html", error_message=error_message, form=form), 500
+
         name = local_catch[0]
         aliases = local_catch[1]
         ips = get_ipaddr_list(url)

@@ -17,14 +17,18 @@ def get_ipaddr_list(fqdn):
 
 # nslookup: domain name to aliases
 def get_cache_from_local_dns(fqdn):
-    fqdn = re.sub(r"^https?://|/$", "", fqdn)
-    host_ex = socket.gethostbyname_ex(fqdn)
-    name = host_ex[0]
-    alias_list = list(host_ex[1])
-    return (name, alias_list)
-
+    try:
+        fqdn = re.sub(r"^https?://|/$", "", fqdn)
+        host_ex = socket.gethostbyname_ex(fqdn)
+        name = host_ex[0]
+        alias_list = list(host_ex[1])
+        return (name, alias_list)
+    except socket.gaierror as e:
+        return None
 
 # ping –a: ip address to hostname
+
+
 def get_hostname(ip_addr):
     hostname = socket.getfqdn(ip_addr)
     return hostname
