@@ -96,7 +96,7 @@ def home():
         url = re.sub(r"^https?://|/$", "", url)
         local_catch = get_cache_from_local_dns(url)
         if local_catch is None:
-            error_message = "找不到FQDN"
+            error_message = "找不到此FQDN"
             return render_template("beauti_home.html", error_message=error_message, form=form), 500
 
         name = local_catch[0]
