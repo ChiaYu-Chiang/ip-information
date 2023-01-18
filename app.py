@@ -54,18 +54,18 @@ http_handler.setLevel(logging.WARNING)
 def get_status_code(response):
     user_ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
     status_code = response.status
-    logger.info(
-        "Request: method=%s, status=%s, path=%s, user_ip=%s",
+    message = "Request: method={}, status={}, path={}, user_ip={}".format(
         request.method,
         status_code,
         request.path,
         user_ip,
     )
+    logger.info(message)
     if logger.level >= logging.WARNING:
         headers = {
             "Authorization": "Bearer " + app.config["line_notify_access_token"],
             "Content-Type": "application/x-www-form-urlencoded"}
-        params = {"message": "Something went wrong"}
+        params = {"message": message}
         requests.post("https://notify-api.line.me/api/notify",
                       headers=headers, params=params)
     return response
