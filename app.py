@@ -31,28 +31,23 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 # configure the log handler
+logger = logging.getLogger("app")
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)-15s - %(levelname)-8s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 log_handler = TimedRotatingFileHandler(
-    "logs/app.log", when='D', interval=1)
-log_handler.suffix = "%Y_%m_%d"
-
-# logging file format
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)-15s - %(levelname)-8s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    # add the log handler to the app
-    handlers=[log_handler],
-)
+    "logs/app.log", when="midnight", interval=1)
+log_handler.setLevel(logging.INFO)
+log_handler.setFormatter(formatter)
+logger.addHandler(log_handler)
 
 
 # log status after every request
-
-
 @app.after_request
 def get_status_code(response):
     user_ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
     status_code = response.status
-    logging.info(
+    logger.info(
         "Request: method=%s, status=%s, path=%s, user_ip=%s",
         request.method,
         status_code,
