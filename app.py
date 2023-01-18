@@ -1,7 +1,8 @@
 import os
 import re
 import logging
-from logging.handlers import TimedRotatingFileHandler
+import requests
+from logging.handlers import TimedRotatingFileHandler, HTTPHandler
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
 from models import db, Search
@@ -22,6 +23,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # > $set access_token='access_token from https://ipinfo.io/account/token'
 app.config["access_token"] = os.environ.get("access_token")
+app.config["line_notify_access_token"] = os.environ.get(
+    "line_notify_access_token")
 app.config["SECRET_KEY"] = os.urandom(24)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
     basedir, "data.sqlite"
@@ -41,8 +44,12 @@ log_handler.setLevel(logging.INFO)
 log_handler.setFormatter(formatter)
 logger.addHandler(log_handler)
 
+http_handler = HTTPHandler(host="", url="", method="POST")
+http_handler.setLevel(logging.WARNING)
 
 # log status after every request
+
+
 @app.after_request
 def get_status_code(response):
     user_ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
@@ -54,6 +61,13 @@ def get_status_code(response):
         request.path,
         user_ip,
     )
+    if logger.level >= logging.WARNING:
+        headers = {
+            "Authorization": "Bearer " + app.config["line_notify_access_token"],
+            "Content-Type": "application/x-www-form-urlencoded"}
+        params = {"message": "Something went wrong"}
+        requests.post("https://notify-api.line.me/api/notify",
+                      headers=headers, params=params)
     return response
 
 
