@@ -52,7 +52,7 @@ http_handler.setLevel(logging.WARNING)
 
 @app.after_request
 def get_status_code(response):
-    user_ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
+    user_ip = request.headers.get("X-Forwarded-For", "127.0.0.1")
     status_code = response.status
     message = "Request: method={}, status={}, path={}, user_ip={}".format(
         request.method,
@@ -78,7 +78,7 @@ def save_to_database(response):
     if form.validate_on_submit():
         url = form.url.data
         fqdn = re.sub(r"^https?://|/$", "", url)
-        ip = request.headers["X-Forwarded-For"] or "127.0.0.1"
+        ip = request.headers.get("X-Forwarded-For", "127.0.0.1")
 
         result = get_cache_from_local_dns(fqdn)
         if result is None:
