@@ -7,21 +7,29 @@ This repository is a web application for users to query the corresponding IP and
 
 1. Clone this repository.
 * clone with SSH
-```cmd
+```shell
 git clone git@github.com:ChiaYu-Chiang/ip-information.git
 ```
 * clone with HTTPS
-```cmd
+```shell
 git clone https://github.com/ChiaYu-Chiang/ip-information.git
 ```
 2. Enable virtual environment.
-```cmd
+```shell
 cd ip-information\
+```
+* windows
+```shell
 python -m venv .venv
 .venv\Scripts\activate
 ```
+* linux
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+```
 3. Install required packages.
-```cmd
+```shell
 pip install -r requirements.txt
 ```
 
@@ -31,7 +39,7 @@ pip install -r requirements.txt
 * Register an account and get a token 
   * <https://ipinfo.io/account/token>
 2. execute program.
-```cmd
+```shell
 set access_token='access_token from ipinfo api'
 python run_waitress
 ```
@@ -43,7 +51,7 @@ python run_waitress
 1. install Nginx.
 * <http://nginx.org/en/download.html>
 2. start Nginx.
-```cmd
+```shell
 cd C:\yourpath\nginx-version\
 start nginx 
 ```
@@ -84,7 +92,7 @@ http {
 }
 ```
 4. restart Nginx.
-```cmd
+```shell
 nginx -s reload
 ```
 5. visit website.

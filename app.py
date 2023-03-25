@@ -33,6 +33,23 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
+
+def send_line_notification(message):
+    url = "https://notify-api.line.me/api/notify"
+    line_notify_access_token = os.environ.get("line_notify_access_token")
+    headers = {
+        "Authorization": "Bearer " + str(line_notify_access_token),
+    }
+    data = {"message": message}
+    requests.post(url, headers=headers, data=data)
+
+
+class LineNotifyHandler(logging.Handler):
+    def emit(self, record):
+        message = self.format(record)
+        send_line_notification(message)
+
+
 # configure the log handler
 logger = logging.getLogger("app")
 logger.setLevel(logging.INFO)
@@ -46,6 +63,10 @@ logger.addHandler(log_handler)
 
 http_handler = HTTPHandler(host="", url="", method="POST")
 http_handler.setLevel(logging.WARNING)
+
+line_notify_handler = LineNotifyHandler()
+line_notify_handler.setLevel(logging.WARNING)
+logger.addHandler(line_notify_handler)
 
 # log status after every request
 
@@ -61,18 +82,11 @@ def get_status_code(response):
         user_ip,
     )
     logger.info(message)
-    if logger.level >= logging.WARNING:
-        headers = {
-            "Authorization": "Bearer " + app.config["line_notify_access_token"],
-            "Content-Type": "application/x-www-form-urlencoded"}
-        params = {"message": message}
-        requests.post("https://notify-api.line.me/api/notify",
-                      headers=headers, params=params)
     return response
 
 
 # insert data after every request with form submitted
-@app.after_request
+@ app.after_request
 def save_to_database(response):
     form = URLForm()
     if form.validate_on_submit():
@@ -91,13 +105,13 @@ def save_to_database(response):
 
 
 # auto import objects when using flask shell
-@app.shell_context_processor
+@ app.shell_context_processor
 def make_shell_context():
     return dict(db=db, Search=Search)
 
 
 # main page
-@app.route("/", methods=["GET", "POST"])
+@ app.route("/", methods=["GET", "POST"])
 def home():
     form = URLForm()
     if form.validate_on_submit():
@@ -132,19 +146,19 @@ def home():
     return render_template("beauti_home.html", form=form)
 
 
-@app.errorhandler(403)
+@ app.errorhandler(403)
 def forbidden(error):
     message = "Access denied"
     return render_template("403.html", message=message), 403
 
 
-@app.errorhandler(404)
+@ app.errorhandler(404)
 def page_not_found(error):
     message = "This page dose not exist"
     return render_template("404.html", message=message), 404
 
 
-@app.errorhandler(Exception)
+@ app.errorhandler(Exception)
 def app_errorhandler(e):
     if isinstance(e, HTTPException):
         return e
