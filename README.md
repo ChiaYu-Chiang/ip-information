@@ -39,9 +39,21 @@ pip install -r requirements.txt
 * Register an account and get a token 
   * <https://ipinfo.io/account/token>
 2. execute program.
+* windows
 ```shell
-set access_token='access_token from ipinfo api'
+# if use reverse proxy
+# set HOST=127.0.0.1
+set access_token=access_token from ipinfo api
+set line_notify_token=your_token
 python run_waitress
+```
+* linux
+```shell
+# if use reverse proxy
+# export HOST=127.0.0.1
+export access_token=access_token from ipinfo api
+export line_notify_token=your_token
+python3 run_waitress
 ```
 3. visit website.
 * <http://127.0.0.1:5000>
@@ -58,6 +70,13 @@ start nginx
 3. set nginx.conf.
 ```nginx
 http {
+    # global proxy settings
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host $host:$server_port;
+    proxy_set_header X-Forwarded-Port $server_port;
+
     server{
         listen 80;
         server_name localhost;
@@ -66,7 +85,7 @@ http {
     }
 
     server {
-        # IP Information project with waitress
+        # fqdn-info project with waitress
         listen 443 ssl http2;
         server_name localhost;
 
@@ -74,6 +93,7 @@ http {
         ssl_certificate_key yourpath/filename.key;
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
+        # set error page location
         error_page 502 503 /custom_50x.html;
         location = /custom_50x.html {
             internal;
@@ -81,12 +101,6 @@ http {
 
         location / {
             proxy_pass http://127.0.0.1:5000;
- 
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Host $host:$server_port;
-            proxy_set_header X-Forwarded-Port $server_port;
         }
     }
 }
